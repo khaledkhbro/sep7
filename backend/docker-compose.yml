@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/microjob_db?sslmode=disable
+      - JWT_SECRET=your-secret-key
+      - CRON_SECRET=test-secret
+      - NODE_ENV=development
+      - ALLOWED_ORIGINS=http://localhost:3000,https://localhost:3000
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=microjob_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

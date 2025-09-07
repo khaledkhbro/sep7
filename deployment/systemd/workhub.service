@@ -1,0 +1,30 @@
+[Unit]
+Description=WorkHub Microjob Marketplace
+Documentation=https://github.com/your-org/workhub
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/workhub
+ExecStart=/usr/bin/docker-compose -f docker-compose.prod.yml up -d
+ExecStop=/usr/bin/docker-compose -f docker-compose.prod.yml down
+ExecReload=/usr/bin/docker-compose -f docker-compose.prod.yml restart
+TimeoutStartSec=0
+User=workhub
+Group=workhub
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/workhub
+
+# Restart policy
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
